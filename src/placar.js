@@ -1,51 +1,82 @@
-
 import { useState } from "react";
 
-const Placar = () => {
- const [golArg, setGolArg] = useState(0);
- const [golFr, setGolFr] = useState(0);
+const Selecao = (props) => {
+ return (
+   <div style={{ width: "100%", textAlign: "center" }}>
+     <span
+       style={{
+         color:
+           props.jogoAcabou && props.gols > props.golsAdversario
+             ? "blue"
+             : undefined
+       }}
+     >
+       {props.nome}: {props.gols}
+     </span>
+     <br />
+     <button
+       style={{ width: "100%" }}
+       disabled={props.jogoAcabou}
+       onClick={props.gol}
+     >
+       +
+     </button>
+   </div>
+ );
+};
 
- const [fimDeJogo, setFimDeJogo] = useState(false);
+export default function App() {
+ const [argentina, setArgentina] = useState(0);
+ const [franca, setFranca] = useState(0);
 
- let corArg;
- let corFr;
+ const [jogoAcabou, setJogoAcabou] = useState(false);
 
- if (fimDeJogo) {
-   if (golArg > golFr) {
-     corArg = "yellow";
-   } else if (golFr > golArg) {
-     corFr = "yellow";
-   }
+ function acabarJogo() {
+   setJogoAcabou(true);
+ }
+
+ function golDaArgentina() {
+   setArgentina(argentina + 1);
+ }
+
+ function golDaFranca() {
+   setFranca(franca + 1);
  }
 
  return (
    <>
-     <h1>
-       <span style={{ color: corArg }}>{`Argentina: ${golArg}`}</span> X{" "}
-       <span style={{ color: corFr }}>{`França: ${golFr}`}</span>
-     </h1>
-     <button disabled={fimDeJogo} onClick={() => setGolArg(golArg + 1)}>
-       Inserir Gol Argentina
-     </button>
-     <button disabled={fimDeJogo} onClick={() => setGolFr(golFr + 1)}>
-       Inserir Gol França
-     </button>
-     <br></br>
-     <button
-       disabled={fimDeJogo}
-       onClick={function () {
-         setFimDeJogo(true);
+     <div
+       style={{
+         margin: "10px 0px",
+         display: "flex",
+         justifyContent: "space-between"
        }}
      >
-       Fim de jogo
+       <Selecao
+         nome="Argentina"
+         jogoAcabou={jogoAcabou}
+         gols={argentina}
+         golsAdversario={franca}
+         gol={golDaArgentina}
+       />
+       x{" "}
+       <Selecao
+         nome="França"
+         jogoAcabou={jogoAcabou}
+         gols={franca}
+         golsAdversario={argentina}
+         gol={golDaFranca}
+       />
+     </div>
+     {jogoAcabou && argentina === franca && <p>Penalties</p>}
+     <button
+       style={{ width: "100%" }}
+       disabled={jogoAcabou}
+       onClick={acabarJogo}
+     >
+       Acabar o jogo
      </button>
-     <br />
-     {fimDeJogo && golArg === golFr && <span>Penalties</span>}
    </>
  );
-};
-
-export default Placar;
-
-
+}
 
